@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class AuthenticationManagerCustom implements AuthenticationManager {
+public class CustomAuthenticationManager implements AuthenticationManager {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -27,7 +27,7 @@ public class AuthenticationManagerCustom implements AuthenticationManager {
     private LoginRepository loginRepository;
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
 
         var username = authentication.getPrincipal() + "";
         var password = authentication.getCredentials() + "";
@@ -49,8 +49,9 @@ public class AuthenticationManagerCustom implements AuthenticationManager {
         //@formatter:off
         Optional<Login> login = loginRepository.findByUsername(username);
 
-        if (login.isEmpty())
+        if (login.isEmpty()) {
             throw new UsernameNotFoundException(username);
+        }
 
         return new Login(login.get().getId(), login.get().getUsername(), login.get().getPassword());
         //@formatter:on

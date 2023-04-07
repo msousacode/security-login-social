@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,11 +38,12 @@ class LoginControllerTest {
 
         URI uri = new URI(HOST + "/v1/login");
 
-        var login = new Login(null, "teste@gmail.com", "12345678");
+        var login = new Login(null, "testone@email.com", "12345678");
 
         HttpEntity<Object> request = new HttpEntity<>(login, new HttpHeaders());
-        ResponseEntity<String> result = restTemplate.postForEntity(uri, request, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(uri, request, String.class);
 
-        Assertions.assertFalse(result.getBody().isEmpty());
+        Assertions.assertEquals(response.getStatusCode(), HttpStatus.OK);
+        Assertions.assertFalse(response.getBody().isEmpty());
     }
 }

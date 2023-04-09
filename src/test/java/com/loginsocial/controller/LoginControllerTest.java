@@ -1,7 +1,7 @@
 package com.loginsocial.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.loginsocial.persistence.entity.UserPrincipal;
+import com.loginsocial.persistence.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +37,7 @@ class LoginControllerTest {
 
         URI uri = new URI(HOST + "/v1/login");
 
-        var login = new UserPrincipal(null, "testone@email.com", "12345678");
+        var login = new User(null, "testone@email.com", "12345678");
 
         HttpEntity<Object> request = new HttpEntity<>(login, new HttpHeaders());
         ResponseEntity<String> response = restTemplate.postForEntity(uri, request, String.class);
@@ -52,7 +52,7 @@ class LoginControllerTest {
 
         URI uri = new URI(HOST + "/v1/login");
 
-        var login = new UserPrincipal(null, "testone@email.com", "1234567111");
+        var login = new User(null, "testone@email.com", "1234567111");
 
         HttpEntity<Object> request = new HttpEntity<>(login, new HttpHeaders());
         ResponseEntity<String> response = restTemplate.postForEntity(uri, request, String.class);

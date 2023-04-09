@@ -1,4 +1,4 @@
-package com.loginsocial.security.configuration;
+package com.loginsocial.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

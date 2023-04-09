@@ -1,6 +1,6 @@
 package com.loginsocial.controller;
 
-import com.loginsocial.persistence.entity.UserPrincipal;
+import com.loginsocial.persistence.entity.User;
 import com.loginsocial.service.LoginService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,7 +23,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserPrincipal login) {
+    public ResponseEntity<String> login(@RequestBody User login) {
         return ResponseEntity.ok().body(loginService.login(login));
     }
 

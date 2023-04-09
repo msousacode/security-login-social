@@ -4,8 +4,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.loginsocial.persistence.entity.UserPrincipal;
-import com.loginsocial.persistence.repository.LoginRepository;
+import com.loginsocial.persistence.entity.User;
+import com.loginsocial.persistence.repository.UserRepository;
 import com.loginsocial.security.custom.CustomAuthenticationManager;
 import com.loginsocial.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,12 +22,12 @@ public class LoginService {
 
     private final CustomAuthenticationManager customAuthenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final LoginRepository loginRepository;
+    private final UserRepository loginRepository;
 
     public LoginService(
             CustomAuthenticationManager customAuthenticationManager,
             JwtTokenProvider jwtTokenProvider,
-            LoginRepository loginRepository) {
+            UserRepository loginRepository) {
         this.customAuthenticationManager = customAuthenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.loginRepository = loginRepository;
@@ -39,7 +39,7 @@ public class LoginService {
     @Value("${google.secret}")
     private String googleSecret;
 
-    public String login(UserPrincipal login) {
+    public String login(User login) {
         return performLogin(login);
     }
 
@@ -53,7 +53,7 @@ public class LoginService {
         final var googleIdToken = GoogleIdToken.parse(verifier.getJsonFactory(), token);
         final var payload = googleIdToken.getPayload();
 
-        UserPrincipal login = new UserPrincipal();
+        User login = new User();
 
         if (loginRepository.findByUsername(payload.getEmail()).isPresent()) {
             return Optional.of(performLogin(login));
@@ -66,7 +66,7 @@ public class LoginService {
         return jwtTokenProvider.validateToken(token);
     }
 
-    private String performLogin(UserPrincipal login) {
+    private String performLogin(User login) {
         var authentication = customAuthenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtTokenProvider.createToken(authentication);

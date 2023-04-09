@@ -1,5 +1,6 @@
-package com.loginsocial.security.jwt;
+package com.loginsocial.security;
 
+import com.loginsocial.security.TokenProvider;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,17 +15,17 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-public class JwtTokenAuthenticationFilter extends GenericFilterBean {
+public class TokenAuthenticationFilter extends GenericFilterBean {
 
-    public JwtTokenAuthenticationFilter(){}
+    public TokenAuthenticationFilter(){}
 
-    public JwtTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationFilter(TokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public static final String HEADER_PREFIX = "Bearer ";
 
-    JwtTokenProvider jwtTokenProvider;
+    TokenProvider jwtTokenProvider;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

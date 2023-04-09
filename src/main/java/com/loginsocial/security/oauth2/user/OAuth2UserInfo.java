@@ -1,4 +1,4 @@
-package com.loginsocial.security.user;
+package com.loginsocial.security.oauth2.user;
 
 import java.util.Map;
 

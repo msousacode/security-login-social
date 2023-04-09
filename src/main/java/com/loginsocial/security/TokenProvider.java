@@ -1,7 +1,5 @@
-package com.loginsocial.security.jwt;
+package com.loginsocial.security;
 
-import com.loginsocial.persistence.entity.User;
-import com.loginsocial.security.UserPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -25,20 +23,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class JwtTokenProvider {
+public class TokenProvider {
 
-    @Value("${token.jwt.secret}")
-    private String jwtSecret;
+    @Value("${app.auth.tokenSecret}")
+    private String tokenSecret;
 
-    @Value("${token.jwt.expiration}")
-    private long jwtExpiration;
+    @Value("${app.auth.tokenExpirationMsec}")
+    private long tokenExpirationMsec;
 
     public String createToken(Authentication authentication) {
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        Date expiryDate = Date.from(Instant.now().plus(Duration.ofSeconds(jwtExpiration)));
-        SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        Date expiryDate = Date.from(Instant.now().plus(Duration.ofSeconds(tokenExpirationMsec)));
+        SecretKey secretKey = Keys.hmacShaKeyFor(tokenSecret.getBytes(StandardCharsets.UTF_8));
 
         return Jwts.builder()
                 .setSubject(userPrincipal.getId().toString())
@@ -50,7 +48,7 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
 
-        SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        SecretKey secretKey = Keys.hmacShaKeyFor(tokenSecret.getBytes(StandardCharsets.UTF_8));
 
         Claims body = Jwts.parser()
                 .setSigningKey(secretKey)
@@ -75,7 +73,7 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) {
-        SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        SecretKey secretKey = Keys.hmacShaKeyFor(tokenSecret.getBytes(StandardCharsets.UTF_8));
         try {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
             return true;

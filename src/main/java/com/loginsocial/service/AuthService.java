@@ -1,8 +1,8 @@
 package com.loginsocial.service;
 
 import com.loginsocial.payload.LoginRequest;
-import com.loginsocial.security.custom.CustomAuthenticationManager;
-import com.loginsocial.security.jwt.JwtTokenProvider;
+import com.loginsocial.security.CustomAuthenticationManager;
+import com.loginsocial.security.TokenProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final CustomAuthenticationManager customAuthenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider jwtTokenProvider;
 
     public AuthService(
             CustomAuthenticationManager customAuthenticationManager,
-            JwtTokenProvider jwtTokenProvider) {
+            TokenProvider jwtTokenProvider) {
         this.customAuthenticationManager = customAuthenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
     }

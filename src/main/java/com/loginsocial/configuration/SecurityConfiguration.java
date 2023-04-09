@@ -1,8 +1,8 @@
-package com.loginsocial.config;
+package com.loginsocial.configuration;
 
-import com.loginsocial.security.custom.CustomAuthenticationManager;
-import com.loginsocial.security.jwt.JwtTokenAuthenticationFilter;
-import com.loginsocial.security.jwt.JwtTokenProvider;
+import com.loginsocial.security.CustomAuthenticationManager;
+import com.loginsocial.security.TokenAuthenticationFilter;
+import com.loginsocial.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +23,7 @@ public class SecurityConfiguration extends GlobalMethodSecurityConfiguration {
     private CustomAuthenticationManager authenticationManager;
 
     @Bean
-    protected SecurityFilterChain filterChain(HttpSecurity http, JwtTokenProvider tokenProvider) throws Exception {
+    protected SecurityFilterChain filterChain(HttpSecurity http, TokenProvider tokenProvider) throws Exception {
         //@formatter:off
         http
                 .cors()
@@ -62,6 +62,6 @@ public class SecurityConfiguration extends GlobalMethodSecurityConfiguration {
                     .authenticationManager(authenticationManager);
 
         // Add our custom Token based authentication filter
-        return http.addFilterBefore(new JwtTokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class).build();
+        return http.addFilterBefore(new TokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class).build();
     }
 }

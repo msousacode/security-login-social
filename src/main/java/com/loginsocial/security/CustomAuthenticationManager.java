@@ -1,4 +1,4 @@
-package com.loginsocial.security.custom;
+package com.loginsocial.security;
 
 
 import com.loginsocial.persistence.entity.User;

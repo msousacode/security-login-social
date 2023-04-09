@@ -29,13 +29,13 @@ public class TokenProvider {
     private String tokenSecret;
 
     @Value("${app.auth.tokenExpirationMsec}")
-    private long tokenExpirationMsec;
+    private long jwtExpiration;
 
     public String createToken(Authentication authentication) {
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        Date expiryDate = Date.from(Instant.now().plus(Duration.ofSeconds(tokenExpirationMsec)));
+        Date expiryDate = Date.from(Instant.now().plus(Duration.ofSeconds(jwtExpiration)));
         SecretKey secretKey = Keys.hmacShaKeyFor(tokenSecret.getBytes(StandardCharsets.UTF_8));
 
         return Jwts.builder()

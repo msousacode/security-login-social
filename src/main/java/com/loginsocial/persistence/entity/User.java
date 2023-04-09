@@ -9,7 +9,6 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name")
@@ -41,6 +40,7 @@ public class User {
         this.email = builder.email;
         this.emailVerified = builder.emailVerified;
         this.imageUrl = builder.imageUrl;
+        this.provider = builder.provider;
     }
 
     public Long getId() {

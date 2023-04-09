@@ -4,7 +4,7 @@ CREATE TABLE users (
     id INTEGER PRIMARY KEY,
     name VARCHAR(64),
     email VARCHAR(64) NOT NULL,
-    password VARCHAR(64) NOT NULL,
+    password VARCHAR(64),
     image_url VARCHAR(150),
     email_verified boolean DEFAULT false,
     provider VARCHAR(20));

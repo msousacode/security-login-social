@@ -1,6 +1,7 @@
 package com.loginsocial.security.jwt;
 
 import com.loginsocial.persistence.entity.User;
+import com.loginsocial.security.UserPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -34,13 +35,13 @@ public class JwtTokenProvider {
 
     public String createToken(Authentication authentication) {
 
-        User user = (User) authentication.getPrincipal();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         Date expiryDate = Date.from(Instant.now().plus(Duration.ofSeconds(jwtExpiration)));
         SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 
         return Jwts.builder()
-                .setSubject(user.getId().toString())
+                .setSubject(userPrincipal.getId().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(secretKey, SignatureAlgorithm.HS256)

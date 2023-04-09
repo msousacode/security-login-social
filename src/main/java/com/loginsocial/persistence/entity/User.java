@@ -5,24 +5,31 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "email")
     private String email;
 
+    @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "email_verified")
     private Boolean emailVerified = false;
 
     @JsonIgnore
+    @Column(name = "password")
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "provider")
     private AuthProvider provider;
 
     public User() {

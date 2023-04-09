@@ -1,6 +1,14 @@
-DROP TABLE IF EXISTS login;
-CREATE TABLE user_principal (id INTEGER PRIMARY KEY, username VARCHAR(64) NOT NULL, password VARCHAR(64) NOT NULL);
+DROP TABLE IF EXISTS users;
 
-INSERT INTO user_principal (id, username, password) VALUES
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY,
+    name VARCHAR(64),
+    email VARCHAR(64) NOT NULL,
+    password VARCHAR(64) NOT NULL,
+    image_url VARCHAR(150),
+    email_verified boolean DEFAULT false,
+    provider VARCHAR(20));
+
+INSERT INTO users (id, email, password) VALUES
   (1, 'testone@email.com', '$2a$10$v9CUp5LIVRRebjfngXLHg.Xc7BQCCrAv6m7Bki3EQYVt7WMcIRu4K'),
   (2, 'testetwo@email.com', '$2a$10$v9CUp5LIVRRebjfngXLHg.Xc7BQCCrAv6m7Bki3EQYVt7WMcIRu4K');

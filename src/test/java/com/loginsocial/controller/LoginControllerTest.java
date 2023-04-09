@@ -1,6 +1,7 @@
 package com.loginsocial.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.loginsocial.payload.LoginRequest;
 import com.loginsocial.persistence.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,11 +36,11 @@ class LoginControllerTest {
     @DisplayName("deve executar o login do usuário com sucesso")
     void shouldPerformLogin_thenSuccess() throws URISyntaxException, JsonProcessingException {
 
-        URI uri = new URI(HOST + "/v1/login");
+        URI uri = new URI(HOST + "/v1/auth/login");
 
-        var login = new User(null, "testone@email.com", "12345678");
+        var loginRequest = new LoginRequest("testone@email.com", "12345678");
 
-        HttpEntity<Object> request = new HttpEntity<>(login, new HttpHeaders());
+        HttpEntity<Object> request = new HttpEntity<>(loginRequest, new HttpHeaders());
         ResponseEntity<String> response = restTemplate.postForEntity(uri, request, String.class);
 
         Assertions.assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -50,9 +51,9 @@ class LoginControllerTest {
     @DisplayName("deve tentar executar o login do usuário com senha incorreta")
     void shouldTryPerformLoginWithIncorrectPassword_thenFail() throws URISyntaxException, JsonProcessingException {
 
-        URI uri = new URI(HOST + "/v1/login");
+        URI uri = new URI(HOST + "/v1/auth/login");
 
-        var login = new User(null, "testone@email.com", "1234567111");
+        var login = new LoginRequest("testone@email.com", "12345678111");
 
         HttpEntity<Object> request = new HttpEntity<>(login, new HttpHeaders());
         ResponseEntity<String> response = restTemplate.postForEntity(uri, request, String.class);

@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.http.HttpMethod.POST;
@@ -22,7 +23,7 @@ public class SecurityConfiguration extends GlobalMethodSecurityConfiguration {
     private CustomAuthenticationManager authenticationManager;
 
     @Bean
-    protected void filterChain(HttpSecurity http, JwtTokenProvider tokenProvider) throws Exception {
+    protected SecurityFilterChain filterChain(HttpSecurity http, JwtTokenProvider tokenProvider) throws Exception {
         //@formatter:off
         http
                 .cors()
@@ -53,14 +54,14 @@ public class SecurityConfiguration extends GlobalMethodSecurityConfiguration {
                             "/h2-console/**")
                     .permitAll()
                         .antMatchers("/auth/**", "/oauth2/**").permitAll()
-                        .antMatchers(POST, "/v1/login").permitAll()
-                        .antMatchers(POST, "/v1/token").permitAll()
+                        .antMatchers(POST, "/v1/auth/login").permitAll()
+                        .antMatchers(POST, "/v1/auth/token").permitAll()
                         .anyRequest().authenticated()
                     .and()
                         .headers(headers -> headers.frameOptions().disable())//mandatory when using h2 database, otherwise you can remove.
                     .authenticationManager(authenticationManager);
 
         // Add our custom Token based authentication filter
-        http.addFilterBefore(new JwtTokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class).build();
+        return http.addFilterBefore(new JwtTokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class).build();
     }
 }

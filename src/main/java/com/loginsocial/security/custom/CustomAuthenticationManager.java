@@ -48,7 +48,7 @@ public class CustomAuthenticationManager implements AuthenticationManager {
 
     public UserDetails loadUserByUsername(String username) {
 
-        Optional<User> loginOptional = loginRepository.findByUsername(username);
+        Optional<User> loginOptional = loginRepository.findByEmail(username);
 
         if (loginOptional.isEmpty()) {
             throw new UsernameNotFoundException(username);

@@ -1,6 +1,6 @@
 package com.loginsocial.security.jwt;
 
-import com.loginsocial.model.Login;
+import com.loginsocial.persistence.entity.UserPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -13,12 +13,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -30,41 +32,27 @@ public class JwtTokenProvider {
     @Value("${token.jwt.expiration}")
     private long jwtExpiration;
 
-    private SecretKey secretKey;
+    public String createToken(Authentication authentication) {
 
-    @PostConstruct
-    public void setUpSecretKey() {
-        var secret = Base64.getEncoder().encodeToString(this.jwtSecret.getBytes());
-        secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-    }
+        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
 
-    public String genereToken(Authentication auth) {
+        Date expiryDate = Date.from(Instant.now().plus(Duration.ofSeconds(jwtExpiration)));
+        SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 
-        Login user = (Login) auth.getPrincipal();
-
-        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
-
-        ArrayList<String> authoritiesList = new ArrayList<>(authorities.size());
-
-        for (GrantedAuthority authority : authorities) {
-            authoritiesList.add(authority.getAuthority());
-        }
-
-        //@formatter:off
         return Jwts.builder()
-                .setSubject(user.getUsername())
-                .claim("roles", authoritiesList)
+                .setSubject(user.getId().toString())
                 .setIssuedAt(new Date())
-                .setExpiration(Date.from(Instant.now().plus(Duration.ofSeconds(jwtExpiration))))
-                .signWith(this.secretKey, SignatureAlgorithm.HS256)
+                .setExpiration(expiryDate)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
-        //@formatter:on
     }
 
     public Authentication getAuthentication(String token) {
 
+        SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+
         Claims body = Jwts.parser()
-                .setSigningKey(this.secretKey)
+                .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody();
 
@@ -86,8 +74,9 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) {
+        SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
         try {
-            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(this.secretKey).build().parseClaimsJws(token);
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
             return true;
         } catch (RuntimeException ex) {
         }

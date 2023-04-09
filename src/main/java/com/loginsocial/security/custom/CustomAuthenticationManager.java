@@ -1,8 +1,8 @@
 package com.loginsocial.security.custom;
 
 
-import com.loginsocial.model.Login;
-import com.loginsocial.persistence.LoginRepository;
+import com.loginsocial.persistence.entity.UserPrincipal;
+import com.loginsocial.persistence.repository.LoginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -47,13 +47,13 @@ public class CustomAuthenticationManager implements AuthenticationManager {
 
     public UserDetails loadUserByUsername(String username) {
         //@formatter:off
-        Optional<Login> login = loginRepository.findByUsername(username);
+        Optional<UserPrincipal> login = loginRepository.findByUsername(username);
 
         if (login.isEmpty()) {
             throw new UsernameNotFoundException(username);
         }
 
-        return new Login(login.get().getId(), login.get().getUsername(), login.get().getPassword());
+        return new UserPrincipal(login.get().getId(), login.get().getUsername(), login.get().getPassword());
         //@formatter:on
     }
 }

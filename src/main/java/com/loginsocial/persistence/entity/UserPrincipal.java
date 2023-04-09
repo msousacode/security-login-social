@@ -1,4 +1,4 @@
-package com.loginsocial.model;
+package com.loginsocial.persistence.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import java.util.Collection;
 
 @Entity
-public class Login implements UserDetails {
+public class UserPrincipal implements UserDetails {
 
     @Id
     @GeneratedValue
@@ -17,10 +17,10 @@ public class Login implements UserDetails {
     private String username;
     private String password;
 
-    public Login() {
+    public UserPrincipal() {
     }
 
-    public Login(Long id, String username, String password) {
+    public UserPrincipal(Long id, String username, String password) {
         this.id = id;
         this.username = username;
         this.password = password;

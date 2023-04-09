@@ -1,8 +1,7 @@
 package com.loginsocial.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loginsocial.model.Login;
+import com.loginsocial.persistence.entity.UserPrincipal;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,12 +37,27 @@ class LoginControllerTest {
 
         URI uri = new URI(HOST + "/v1/login");
 
-        var login = new Login(null, "testone@email.com", "12345678");
+        var login = new UserPrincipal(null, "testone@email.com", "12345678");
 
         HttpEntity<Object> request = new HttpEntity<>(login, new HttpHeaders());
         ResponseEntity<String> response = restTemplate.postForEntity(uri, request, String.class);
 
         Assertions.assertEquals(response.getStatusCode(), HttpStatus.OK);
         Assertions.assertFalse(response.getBody().isEmpty());
+    }
+
+    @Test
+    @DisplayName("deve tentar executar o login do usuário com senha incorreta")
+    void shouldTryPerformLoginWithIncorrectPassword_thenFail() throws URISyntaxException, JsonProcessingException {
+
+        URI uri = new URI(HOST + "/v1/login");
+
+        var login = new UserPrincipal(null, "testone@email.com", "1234567111");
+
+        HttpEntity<Object> request = new HttpEntity<>(login, new HttpHeaders());
+        ResponseEntity<String> response = restTemplate.postForEntity(uri, request, String.class);
+
+        Assertions.assertEquals(response.getStatusCode(), HttpStatus.FORBIDDEN);
+        Assertions.assertNull(response.getBody());
     }
 }

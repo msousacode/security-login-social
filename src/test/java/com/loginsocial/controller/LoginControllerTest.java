@@ -58,7 +58,6 @@ class LoginControllerTest {
         HttpEntity<Object> request = new HttpEntity<>(login, new HttpHeaders());
         ResponseEntity<String> response = restTemplate.postForEntity(uri, request, String.class);
 
-        Assertions.assertEquals(response.getStatusCode(), HttpStatus.FORBIDDEN);
-        Assertions.assertNull(response.getBody());
+        Assertions.assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
     }
 }

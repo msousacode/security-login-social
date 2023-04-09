@@ -1,12 +1,12 @@
 package com.loginsocial.security;
 
 
+import com.loginsocial.exception.BadRequestException;
 import com.loginsocial.persistence.entity.User;
 import com.loginsocial.persistence.repository.UserRepository;
-import com.loginsocial.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
+
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,7 +36,7 @@ public class CustomAuthenticationManager implements AuthenticationManager {
         UserDetails user = loadUserByUsername(username);
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new BadCredentialsException("Bad credentials");
+            throw new BadRequestException("Bad credentials");
         }
 
         if (!user.isEnabled()) {

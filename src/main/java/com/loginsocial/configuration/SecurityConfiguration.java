@@ -97,10 +97,9 @@ public class SecurityConfiguration extends GlobalMethodSecurityConfiguration {
                 .userService(customOAuth2UserService)
                 .and()
                     .successHandler(oAuth2AuthenticationSuccessHandler)
-                    .failureHandler(oAuth2AuthenticationFailureHandler);
-                    //.and()
-                        //
-                    //.authenticationManager(authenticationManager);
+                    .failureHandler(oAuth2AuthenticationFailureHandler)
+                    .and()
+                .authenticationManager(authenticationManager);// authentication application
 
         // Add our custom Token based authentication filter
         return http.addFilterBefore(new TokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class).build();
